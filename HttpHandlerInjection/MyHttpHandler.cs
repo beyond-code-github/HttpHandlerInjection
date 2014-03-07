@@ -1,10 +1,22 @@
 ﻿namespace HttpHandlerInjection
 {
+    using System.Threading;
     using System.Web;
 
-    public class MyHttpHandler : InjectableHttpHandler {
-       
-        public IMessageProvider MessageProvider { get; set; }
+    public class MyHttpHandler : InjectableHttpHandler
+    {
+        private readonly ThreadLocal<IMessageProvider> messageProvider = new ThreadLocal<IMessageProvider>();
+        public IMessageProvider MessageProvider
+        {
+            get
+            {
+                return messageProvider.Value;
+            }
+            set
+            {
+                messageProvider.Value = value;
+            }
+        }
 
         public override void ProcessRequest(HttpContextBase context)
         {
